@@ -1,7 +1,7 @@
 from multiprocessing import Process, Value
 from time import sleep
 
-from locker import Locker
+from Semaphore import Locker
 
 
 def add(num, value, locker):
