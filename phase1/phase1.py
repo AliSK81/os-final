@@ -14,7 +14,7 @@ def add(num, value, locker):
         sleep(1)
         if tmp != num.value:
             print("Process conflict")
-        locker.unlock()
+        locker.unlock(0)
 
 
 def sub(num, value, locker):
@@ -27,7 +27,7 @@ def sub(num, value, locker):
         sleep(1.5)
         if tmp != num.value:
             print("Process conflict")
-        locker.unlock()
+        locker.unlock(1)
 
 
 def mul(num, value, locker):
@@ -40,7 +40,7 @@ def mul(num, value, locker):
         sleep(2)
         if tmp != num.value:
             print("Process conflict")
-        locker.unlock()
+        locker.unlock(2)
 
 
 def div(num, value, locker):
@@ -53,7 +53,7 @@ def div(num, value, locker):
         sleep(3)
         if tmp != num.value:
             print("Process conflict")
-        locker.unlock()
+        locker.unlock(3)
 
 
 def Show(num):

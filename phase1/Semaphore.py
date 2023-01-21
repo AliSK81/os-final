@@ -17,8 +17,9 @@ class Locker:
                 if self.arr[i] == 1:
                     break
 
-    def unlock(self):
+    def unlock(self, i: int):
         self.val.value += 1
         if self.val.value <= 0:
-            i = self.queue.get()
-            self.arr[i] = 1
+            j = self.queue.get()
+            self.arr[j] = 1
+        self.arr[i] = 0
