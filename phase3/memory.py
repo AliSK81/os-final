@@ -15,6 +15,12 @@ class Memory:
     def deallocate(self, frame_no):
         self.frames[frame_no] = ''
 
+    def is_process_loaded(self, process_name):
+        for frame in self.frames:
+            if frame.startswith(process_name):
+                return True
+        return False
+
     def __repr__(self):
         return f'Memory:\n' \
                f'remaining_frames: {self.get_remaining_frames()}\n' \

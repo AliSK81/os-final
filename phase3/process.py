@@ -56,4 +56,4 @@ class Process:
         ra = self.get_var_relative_address(var_name)
         la = self.get_var_logical_address(ra)
         pa = self.get_var_physical_address(la)
-        print(var_name, '\n', la, pa)
+        print(var_name, '\n', 'relative address: ', ra , la, pa)
