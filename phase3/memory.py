@@ -9,6 +9,12 @@ class Memory:
     def get_remaining_frames(self):
         return self.frames.count('')
 
+    def is_allocated(self, frame_no):
+        return self.frames[frame_no] != ''
+
+    def deallocate(self, frame_no):
+        self.frames[frame_no] = ''
+
     def __repr__(self):
         return f'Memory:\n' \
                f'remaining_frames: {self.get_remaining_frames()}\n' \

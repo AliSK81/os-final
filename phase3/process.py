@@ -42,6 +42,9 @@ class Process:
         offset = logical_address.offset
         return PhysicalAddress(frame_no=frame_no, offset=offset)
 
+    def get_required_frames(self):
+        return self.allocated_bytes // self.page_size + 1
+
     def __repr__(self):
         return f'''Process: {self.name}
         vars: {self.vars}

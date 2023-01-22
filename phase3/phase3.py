@@ -26,32 +26,57 @@ def main():
 
     processes = [process_a, process_b]
 
-    frame_no = 0
+    curr_frame_no = 0
 
     mem = Memory(mem_size, frame_size)
-    print(mem)
+
+    queue = list()
 
     for process in processes:
-        frames_required = process.allocated_bytes // frame_size + 1
+
+        print(mem)
+
+        frames_required = process.get_required_frames()
 
         if frames_required <= mem.get_remaining_frames():
 
             for page_no in range(frames_required):
-                mem.set_frame(frame_no, f'{process.name}{page_no}')
+                mem.set_frame(curr_frame_no, f'{process.name}{page_no}')
 
-                process.set_frame(page_no, frame_no)
-                frame_no += 1
+                process.set_frame(page_no, curr_frame_no)
+                curr_frame_no += 1
 
-        elif frames_required <= mem.frames_count:
-            print('to replace')
+            queue.append(process)
 
         else:
-            print('no space')
+
+            while frames_required > 0:
+                dropped_process = queue.pop(0)
+
+                for frame_no in range(mem.frames_count):
+                    if mem.frames[frame_no].startswith(dropped_process.name):
+                        print(f'deallocated {mem.frames[frame_no]}')
+                        mem.deallocate(frame_no)
+
+                print(mem)
+
+                frames_required -= dropped_process.get_required_frames()
+
+            for page_no in range(process.get_required_frames()):
+
+                for frame_no in range(mem.frames_count):
+
+                    if not mem.is_allocated(frame_no):
+                        print(f'frame {frame_no} is not allocated, so replaced with {process.name}{page_no}.')
+
+                        mem.set_frame(frame_no, f'{process.name}{page_no}')
+
+                        process.set_frame(page_no, frame_no)
+                        frames_required -= 1
+                        page_no += 1
+                        break
 
     print(mem)
-
-    for process in processes:
-        print(process)
 
     process_a.print_var_addresses('var5')
 
