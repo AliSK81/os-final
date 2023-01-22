@@ -4,4 +4,4 @@ class PhysicalAddress:
         self.offset = offset
 
     def __repr__(self):
-        return f'(frame_no: {self.frame_no}, offset: {self.offset})'
+        return f'Physical Address: (frame_no: {self.frame_no}, offset: {self.offset})\n'

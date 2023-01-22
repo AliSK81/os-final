@@ -4,28 +4,24 @@ from var import Var
 
 
 class Process:
-    def __init__(self, name: str, vars: [Var], frame_size: int):
+    def __init__(self, name: str, vars: [Var], page_size: int, pages_count: int):
         self.name = name
         self.vars = vars
 
-        self.pages_count: int
-        self.page_table: []
+        self.page_size = page_size
+        self.page_table = [-1] * pages_count
+        self.allocated_bytes: int
 
-        self.vars_info = dict()
-        self.__init_vars_info(frame_size)
+        self.relative = dict()
+        self.__init_vars_relative_address()
 
-    def __init_vars_info(self, frame_size: int):
-        summ = 0
-        page_no = 0
+    def __init_vars_relative_address(self):
+        relative_address = 0
 
         for var in self.vars:
-            page_no = summ // frame_size
-            offset = summ % frame_size
-            self.vars_info[var.name] = LogicalAddress(page_no=page_no, offset=offset)
-            summ += var.size
-
-        self.pages_count = page_no + 1
-        self.page_table = [0] * self.pages_count
+            self.relative[var.name] = relative_address
+            relative_address += var.size
+            self.allocated_bytes = relative_address
 
     def set_frame(self, page_no: int, frame_no: int):
         self.page_table[page_no] = frame_no
@@ -33,10 +29,15 @@ class Process:
     def get_frame(self, page_no):
         return self.page_table[page_no]
 
-    def get_var_logical_address(self, var_name: str):
-        return self.vars_info[var_name]
+    def get_var_relative_address(self, var_name):
+        return self.relative[var_name]
 
-    def translate_logical_address(self, logical_address: LogicalAddress):
+    def get_var_logical_address(self, relative_address: int):
+        page_no = relative_address // self.page_size
+        offset = relative_address % self.page_size
+        return LogicalAddress(page_no=page_no, offset=offset)
+
+    def get_var_physical_address(self, logical_address: LogicalAddress):
         frame_no = self.page_table[logical_address.page_no]
         offset = logical_address.offset
         return PhysicalAddress(frame_no=frame_no, offset=offset)
@@ -44,7 +45,12 @@ class Process:
     def __repr__(self):
         return f'''Process: {self.name}
         vars: {self.vars}
-        vars_info: {self.vars_info}
-        pages_count: {self.pages_count}
+        relative: {self.relative}
         page_table: {self.page_table}
         '''
+
+    def print_var_addresses(self, var_name: str):
+        ra = self.get_var_relative_address(var_name)
+        la = self.get_var_logical_address(ra)
+        pa = self.get_var_physical_address(la)
+        print(var_name, '\n', la, pa)
